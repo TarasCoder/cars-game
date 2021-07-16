@@ -1,3 +1,4 @@
+const MAX_ENEMY = 7;
 const score = document.querySelector(".score");
 const start = document.querySelector(".start");
 const gameArea = document.querySelector(".gameArea");
@@ -37,9 +38,14 @@ function startGame() {
     const enemy = document.createElement("div");
     enemy.classList.add("enemy");
     enemy.y = -100 * setting.traffic * (i + 1);
-    enemy.style.left = Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + "px"; 
+    enemy.style.left =
+      Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + "px";
     enemy.style.top = enemy.y + "px";
-    enemy.style.background = "transparent url('./images/enemy.png') center / cover no-repeat"
+    enemy.style.background = `
+    transparent 
+    url('./images/enemy${getRandomEnemy(MAX_ENEMY)}.png') 
+    center / cover 
+    no-repeat`;
     gameArea.append(enemy);
   }
 
@@ -49,6 +55,9 @@ function startGame() {
   setting.y = car.offsetTop;
   requestAnimationFrame(playGame);
 }
+
+const getRandomEnemy = (max) => Math.floor(Math.random() * max + 1);
+
 function playGame() {
   if (setting.start) {
     moveRoad();
@@ -74,16 +83,16 @@ function playGame() {
   }
 }
 function startRun(event) {
-  if (event.key === "F5") {
-    keys[event.key] = true;
-  } else {
+  if (keys.hasOwnProperty(event.key)) {
     event.preventDefault();
     keys[event.key] = true;
-  }
+  } 
 }
 function stopRun(event) {
+  if (keys.hasOwnProperty(event.key)) {
   event.preventDefault();
   keys[event.key] = false;
+}
 }
 function moveRoad() {
   let lines = document.querySelectorAll(".line");
@@ -102,8 +111,8 @@ function moveEnemy() {
     item.style.top = item.y + "px";
     if (item.y >= document.documentElement.clientHeight) {
       item.y = -100 * setting.traffic;
-      item.style.left = Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + "px"; 
-
+      item.style.left =
+        Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + "px";
     }
   });
 }
